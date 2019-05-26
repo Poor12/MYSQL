@@ -1,0 +1,44 @@
+1.数值类型
+	（1）整数类型：tinyint 1B,smallint 2B,mediumint 3B,int 4B,bigint 8B
+	（2）浮点数类型：float 4B,double 8B
+	（3）定点数类型：dec(M,D) (M+2)B
+	（4）位类型：bit(M) (1-8)B，最小值BIT(1)，最大值BIT(64)
+2.对于整型数据，还支持在类型名称后面的小括号内显示宽度，一般配合zerofill使用，zerofill在数字位数不够的空间内用字符'0'填满，如alter table t1 modify id1 int zerofill，如果插入大于限定宽度的值，不会对插入的数据有任何影响，还是按照类型的实际精度存储。
+3.所有整数类型都有一个可选属性unsigned，如果一个列指定zerofill，mysql自动为该列添加unsigned属性
+4.整型还有一个属性：auto_increment，在需要产生唯一标识或顺序值时可利用该属性。
+例：create table ai(id int auto_increment not null primary key);create table ai(id int auto_increment not null ,primary key(id));reate table ai(id int auto_increment not null ,unique(id))
+5.浮点数和定点数可以在类型后加“（M，D）”的方式来表示，M表示整数位+小数位（精度），D表示小数位（标度），且浮点数超出精度会进行四舍五入，定点数则会报错，如果要用于数据库的迁移应避免这么做。
+6.decimal默认整数位为10，小数位为0；bit默认为bit（1），直接使用select命令不会看到结果，可以使用bin（）（显示为二进制）或者hex（）（显示为十六进制）函数进行读取
+7.数据插入bit类型数据，先转换为二进制，如果位数允许插入，否则插入失败
+8.日期时间类型
+	（1）date表示年月日 1000-01-01 - 9999-12-31
+	（2）datetime表示年月日时分秒 1000-01-01 00：00：00-9999-12-31 23：59：59
+	（3）time只表示时分秒
+	（4）timestamp表示需要经常插入或更新日期为当前系统时间
+	（5）year表示年份
+9.用now（）插入当前日期
+10.timestamp插入日期时会先转换为本地时区后存放；而在数据库中取出时需要将日期转换为本地时区后显示
+11.timestamp支持的时间范围小，且将表中的第一个timestamp列设为系统时间，插入null或插入更新一行时不赋值自动设置该列为当前日期和时间
+12.yyyy-mm-dd hh-mm-ss或yy-mm-dd hh-mm-ss格式的字符串允许不严格匹配，即任何标点符都可以作为日期部分或时间部分的间隔符，且当日月时分秒的值小于10时，不需要指定两位数
+13.yyyymmddhhmmss或yymmddhhmmss格式的字符串假定字符串对于日期类型是有意义的
+14.yyyymmddhhmmss或yymmddhhmmss格式的数字假定数字对于日期类型是有意义的，如果一个数值为8位或14位长，假定为yyyymmdd或yyyymmddhhmmss；如果数值为6或12位长，假定为yymmdd或yymmddhhmmss
+15.字符串类型
+	（1）char（M），M为0-255整数
+	（2）varchar（M），M为0-65535整数
+	（3）tinyblob
+	（4）blob
+	（5）mediumblob
+	（6）longblob
+	（7）tinytext
+	（8）text
+	（9）mediumtext
+	（10）longtext
+	（11）varbinary（M）
+	（12）binary（M）
+	（13）enum
+	（14）set
+16.char和varchar都用来保存mysql中较短的字符串，二者的主要区别在于存储方式的不同：char列长度固定为创建时声明的大小，varchar列的值为可变长字符串。检索时，char删除了尾部的空格，而varchar会保留这些空格。
+17.binary和varbinary包含二进制字符串而不包含非二进制字符串，当保存binary时在值的最后通过填充零字节达到目标长度。
+18.enum表示枚举类型，它的值范围需要在创建表时通过枚举方式显示指定，例create table t(gender enum('M','F'))，忽略大写，且在插入不属于集合中的值时，不会返回警告，返回集合中的第一个值‘M’
+19.set与enum类似，但set可以一次选取多个成员，例create table t(gender set('M','F'))；insert into t values('m,f')
+

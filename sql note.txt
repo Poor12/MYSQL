@@ -1,0 +1,73 @@
+sql分类：
+1.ddl语句：数据定义语言，这些语句定义了不同的数据段、数据库、表、列、索引等数据库对象。（包括create，drop，alter）
+2.dml语句：数据操纵语句，用于添加、删除、更新和查询数据库记录。（包括insert，delete，update，select）
+3.dcl语句：数据控制语句，用于控制不同数据段直接许可和访问级别的语句，这些语句定义了数据库、表、字段的访问权限和安全级别。（包括grant，revoke)
+
+ddl:
+1.create database dbname;  //创建数据库
+2.show databases;  //显示已有的数据库
+系统自带数据库：
+（1）information_schema:主要存储了系统中的一些数据库对象信息，比如用户表信息、列信息、权限信息、字符集信息、分区信息等
+（2）cluster:存储了系统的集群信息
+（3）mysql:存储了系统的用户权限信息
+（4）test:系统自动创建的测试数据库，任何用户都可以使用
+3.use dbname；//选择数据库
+4.show tables；//查看数据库中的表
+5.drop database dbname;  //删除数据库
+6.create table tablename(
+	columm_name1 column_type_1 constraints,
+	columm_name2 column_type_2 constraints)  //创建数据库 列名、列类型、约束
+7.desc tablename； //查看表的定义
+8.show create table tablename \G; //查看更详细的表的定义 \g表示使记录能够按照字段竖排，以便更好的显示内容
+9.drop table tablename; //删除表
+10.alter table tablename modify columnname column_definition [first|after col_name]  //修改表类型，[first|after col_name] 表示插入的位置，默认在最后
+11.alter table tablename add [column] columnname column_definition [first|after col_name] //增加表字段
+12.alter table tablename drop [column] columnname //删除表字段
+13.alter table tablename change [column] old_col_name new_col_name column_definition [first|after col_name] //字段改名
+14.alter table tablename rename[to] new_tablename;//表更名
+
+dml:
+1.insert into tablename(field1...fieldn) values(value1....valuen);//插入记录，可以不指定字段名称，含可空字段、非空但是含有默认值的字段、自增字段可以不用在insert后的字段列表中出现，values后面只写对应字段名称的value。这些没写的字段可以自动设置为null、默认值、自增的下一个数字。
+2.update tablename set field1=value1,field2=value2....fieldn=valuen [where condition] //更新记录
+3.delete from tablename [where condition] //删除记录，不加where删除全表
+4.select * from tablename [where condition] //查询记录
+5.select distinct fieldname fron tablename //查询不重复的记录
+6.select * from tablename [where condition] [order by field1 [desc/asc]....]//查询后排序显示，默认升序
+7.select ...[limit offset_start,row_count] //offset_start记录的起始偏移量，默认为0，row_count表示显示的行数
+8.select [field1...fieldn] fun_name from tablename [where condition] [group by field1...[with rollup]] [having where_condition] 
+//fun_name表示要做的聚合操作，也就是聚合函数，常用的有sum，count，max，min
+//group by表示要进行分类聚合的字段，比如按照部门分类统计员工数量，部门就写在group by后
+//with rollup表示是否对分类聚合后的结果进行再汇总
+//having表示对分类后的结果再进行条件的过滤
+9.需要同时显示多个表中的字段时可以用表连接来实现这样的功能，大体上分为外连接和内连接。内连接仅选出两张表中互相匹配的记录，而外连接会选出其他不匹配的记录。
+   内连接举例：select emp.ename,dept.deptname from emp,dept where emp.deptno=dept.deptno
+   外连接分为左连接和右连接，左连接包含所有的左边表中的记录甚至是右边表没有和它匹配的记录，右连接包含所有的右边表中的记录甚至是左边表没有和它匹配的记录。
+   左连接举例：select ename,deptname from emp left join dept on emp.deptno=dept.deptno
+   右连接举例：select ename,deptname from dept right join emp on emp.deptno=dept.deptno
+10.某些情况下，当进行查询时需要的条件是另外一个select语句的结果，这个时候就要用到子查询。
+     例：select * from emp where deptno in(select deptno from dept)，如果子查询记录数唯一，可以用=代替in，子查询在一定情况下可转化为表连接
+11.select * from t1 [union/union all] select * from t2 //记录联合，将结果集合并，union all直接合并，union进行去重
+
+
+dcl语句：
+1.grant select,insert on sakila.* to 'z1'@'localhost' identified by '123' //创建一个数据库用户z1，具有对所有表的insert、select权限
+2.revoke select,insert on sakila.* to 'z1'@'localhost' //收回权限
+
+帮助语句：
+1.？contents 查看帮助类别
+2.？data types 查看数据类型
+3.？create table查看语法
+
+查询元数据信息：
+1.information_schema用来记录mysql中的元数据信息。元数据指的是数据的数据，比如表名、列名、列类型、索引名等属性。它是一个虚拟数据库，物理上并不存在相关的目录和文件；库里的表也不是实际存在的表，全部是视图。
+针对下列需求：
+1.删除数据库test1下所有前缀为tmp的表；
+select concat('drop table test1.',  table_name,  ';') from tables where table_schema='test1' and table_name like 'tmp%';
+2.将数据库test1下所有存储引擎为myisam的表改为innodb；
+select concat('alter table test1.',  table_name, '  engine=innodb;') from tables where table_schema='test1' and engine='MyISAM'
+
+常用视图：
+1.schemata：该表提供了当前mysql实例中所有数据库的信息
+2.tables：该表提供了关于数据库中的表的信息，详细表述了某个表属于哪个schema、表类型、表引擎、创建时间等信息
+3.columns：该表提供了表中的列信息
+4.statistics：该表提供了关于表索引的信息。

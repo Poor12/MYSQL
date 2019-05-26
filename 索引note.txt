@@ -1,0 +1,16 @@
+1.索引在创建表的时候可以同时创建，也可以随时添加新的索引。
+	为city表创建10个字节的前缀索引：create index cityname on city (city(10))
+	删除索引：drop index cityname on city
+2.设计索引的原则：
+	1.搜索的索引列，不一定是所要选择的列，最适合索引的列是出现在where子句中的列
+	2.使用唯一索引，考虑某列中值的分布，索引的列的基数越大，索引的效果越好
+	3.使用短索引，如果对字符串进行索引，应该指定一个前缀长度
+	4.利用最左前缀。在创建一个n列的索引时，实际上创建了mysql可利用的n个索引。
+	5.不要过度索引。
+3.hash索引：
+	1.只用于使用=或<=>操作符的等式比较
+	2.优化器不能使用hash索引来加速order by操作
+	3.只能使用整个关键字来搜索一行
+	
+	btree和hash都可以使用：select * from t1 where key_col=1 or key_col in (15,18,20)
+	btree索引适用：select * from t1 where key_col >1 and key_col < 10

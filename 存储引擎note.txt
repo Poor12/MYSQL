@@ -1,0 +1,48 @@
+1.存储引擎：
+	show engines：显示引擎
+	create table ai(i bigint(20) not null auto_crement,primary key(i)) engine=myisam default charset=gbk;
+	create table country(country_id smallint unsigned not null auto_increment)engine=innodb default charset=gbk;
+	alter table ai engine=innodb
+2.myisam:
+	1.不支持事务、也不支持外键，其优势是访问得速度快，对事务完整性没有要求或以select、insert为主的应用适用
+	2.myisam支持三种不同的存储格式：静态表、动态表和压缩表
+		1.静态表：字段都是非变长字段，每个记录是固定长度的，可能会丢失后面的空格
+		2.动态表：变长字段，占用空间少，但是频繁地更新和删除记录会产生碎片
+		3.压缩表：每个记录被单独压缩，访问开支小
+3.innodb：
+	1.具有提交、回滚和崩溃恢复能力的事务安全
+	2.自动增长列
+	3.外键约束：在创建外键的时候要求父表必须有对应的索引，子表在创建外键的时候也会自动创建对应的索引
+		create table country(
+			country_id smallint unsigned not null auto_increment,
+			country varchar(50) not null,
+			last_update timestamp not null default current_timestamp on update current_timestamp,primary key(country_id)
+		)engine=innodb default charset=utf8;
+		create table city(
+			city_id smallint unsigned not null auto_increment,
+			city varchar(50) not null,
+			country_id smallint unsigned not null,
+			last_update timestamp not null default current_timestamp on update current_timestamp,primary key(city_id),
+			key idx_fk_country_id (country_id),
+			constraint 'fk_city_country' foreign key(country_id) references country(country_id) on delete restrict on update cascade
+		)engine=innodb default charset=utf8;
+		country表是父表，country_id为主键索引，city表是子表，country_id是外键
+		在创建索引时，可以指定在删除、更新父表时，对子表进行相应的操作，包括restrict、cascade、set null和no action。
+		其中restrict和no action相同，是指限制在子表有关联记录的情况下父表不能更新；cascade表示父表在更新或者删除时，更新或者删除子表对应记录；set null则表示父表在更新或者删除的时候，子表对应的字段被set null了
+		当某个表被其他表创建了外键参照时，则该表的对应索引或者主键禁止被删除。
+		在导入多个表的数据时，如果需要忽略表之前的导入顺序，可以暂时关闭外键的检查；同样，在执行LOAD DATA和alter table操作时，可以通过暂时关闭外键约束来加快处理的速度，关闭命令是“set foreign_key_checks=0"，执行完成后语句改回原状态
+	4.存储方式
+	InnoDB存储表和索引有以下两种方式。
+		1.使用共享表空间存储，这种方式创建的表的表结构保存在.frm文件中，数据和索引保存在innodb_data_home_dir和innodb_data_file_path定义的表空间中，可以是多个文件
+		2.使用多表空间存储，这种方式创建的表的表结构仍然保存在.frm文件中，但是每个表的数据和索引单独保存在.ibd中，如果是个分区表，则每个分区对应单独的.ibd文件，文件名是表名+分区名，可以在创建分区的时候指定每个分区的数据文件的位置
+4.memory
+	memory存储引擎使用存在于内存中的内容来创建表。每个memory表只实际对应一个磁盘文件，格式是.frm。memory类型的表访问非常的快，因为它的数据是放在内存中的，默认使用hash索引，但是服务一旦关闭，表中的数据就会丢失。
+	创建：create table tab_memory engine=memory
+	创建索引：create index mem_hash using hash on tab_memory(city_id)
+	在启动mysql服务的时候使用--init-file选项，把insert into.....select或load data infile这样的语句放入这个文件，就可以在服务启动时从持久稳固的数据源装载。
+5.merge
+	merge存储引擎是一组myisam表的组合，这些myisam表必须结构完全相同，merge表本身并没有数据。
+	创建payment_2006表：create table payment_2006(country_id smallint,payment_data datetime,amount decimal(15,2),key idx_fk_country_id(country_id) ) engine=myisam
+	创建payment_2007表：create table payment_2007(country_id smallint,payment_data datetime,amount decimal(15,2),key idx_fk_country_id(country_id) ) engine=myisam
+	创建payment_all表：creat table payment_all(country_id smallint,payment_date datetime,amount decimal(15,2),index(country_id) ) engine=merge union=(payment_2006,payment_2007) insert_method=last; last表示插入时插在最后一个表中
+	

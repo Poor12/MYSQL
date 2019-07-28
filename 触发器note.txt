@@ -1,0 +1,41 @@
+1.触发器是与表相关的数据库对象，在满足定义条件时触发，并执行触发器中定义的语句集合。
+2.创建触发器的语法：CREATE TRIGGER trigger_name trigger_time trigger_event ON tbl_name FOR EACH ROW trigger_stmt，其中trigger_time是指触发器的触发时间，可以是before或者after，before的含义指在检查约束前触发，而after是在检查约束后出发。而trigger_event是触发器的触发时间 ，可以是insert、update或者delete
+3.触发器只能创建在永久表上，不能对临时表创建触发器
+4.示例：
+DELIMITER $$
+CREATE TRIGGER ins_film
+AFTER INSERT ON film FOR EACH ROW BEGIN
+	INSERT INTO film_text(film_id,title,description) VALUES(new.film_id,new.title,new description)
+END;
+$$
+Delimiter ;
+现象：插入film表记录的时候，会向film_text表中插入相应的记录
+5.示例：
+create table tri_demo(id int AUTO_INCREMENT,note varchar(20),primary key(id));
+Create TRIGGER ins_film_bef BEFORE INSERT ON film FOR EACH ROW BEGIN	
+	INSERT INTO tri_demo(note) VALUES('before insert');
+END;
+$$
+CREATE TRIGGER ins_film_aft AFTER INSERT ON film FOR EACH ROW BEGIN
+	INSERT INTO tri_demo(note) VALUES('after insert');
+END;
+$$
+CREATE TRIGGER upd_film_bef BEFORE update ON film FOR EACH ROW BEGIN
+	INSERT INTO tri_demo(note) VALUES('before update');
+END;
+$$
+CREATE TRIGGER upd_film_after AFTER update ON film FOR EACH ROW BEGIN
+	INSERT INTO tri_demo(note) VALUES('after update');
+END;
+$$
+
+On duplicate key update处理记录已存在的情况
+现象：插入已存在的记录，先触发before insert，再出发before update，最后after update
+
+6.删除触发器——drop trigger ins_flim
+7.查看详情——show triggers	/ 查询information_schema.triggers表
+8.触发器使用的限制：
+1.触发程序不能调用将数据返回客户端的存储程序，也不能使用采用CALL语句的动态SQL语句，但是允许存储程序通过参数将数据返回触发程序，也就是存储过程或者函数通过OUT或者INPUT类型的参数将数据返回触发器是可以的
+2.不能在触发器中使用显式或隐士方式开始或结束事务的语句，如commit，collback等
+
+

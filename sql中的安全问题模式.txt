@@ -1,0 +1,17 @@
+1.SQL注入：利用某些数据库的外部接口将用户数据插入到实际的数据库操作语言中。
+2.应对措施：
+	1.PrepareStatement+绑定变量
+	2.使用应用程序提供的转换函数，例如MySQL C API和MySQL++
+	3.自己定义函数进行校验，例如正则表达式
+3.SQL mode：
+	1.通过设置mode，可以完成不同严格程度的数据校验
+	2.通过设置mode为ANSI模式，来保证大多数SQL符合标准的SQL语法，数据库迁移时不需要较大修改
+4.常见功能：
+	1.校验日期数据合法性，在ANSI模式中非法日期可以插入，而在TRADITIONAL模式下，会直接提示日期非法
+	2.在INSERT或UPDATE过程中，如果SQL Mode处于TRADITIONAL模式中，运行MOD(X,0)会出错
+	3.启用NO_BACKSLASH_ESCAPES模式，使反斜杠成为普通字符
+	4.启用PIPES_AS_CONCAT模式，将||视为字符串连接符
+5.常见模式：ANSI、STRICT_TRANS_TABLES、TRADITIONAL
+6.MYSQL提供了很多数据库的组合模式名称，在异构数据库之间迁移数据使用这些模式来导出适用于目标数据库格式的数据
+7.数据迁移中，设置SQL Mode为NO_TABLE_OPTIONS模式，去掉engine关键词，获得通用的建表脚本
+8.修改模式关键词：set session sql_mode="NO_TABLE_OPTIONS"

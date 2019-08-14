@@ -1,0 +1,194 @@
+1.分区是指根据一定的规则，数据库把一个表分解成多个更小的、更容易管理的部分，就访问数据库的应用而言，逻辑上只有一个表或一个索引，但实际上这个表可能由数10个物理分区对象组成，每个分区都是一个独立的对象，可以独立处理，可以作为表的一部分进行处理，不影响应用的业务逻辑
+2.MySQL分区的优点：
+	1.和单个磁盘或者文件系统分区相比，可以存储更多数据
+	2.优化查询，在where子句中包含分区条件时，可以只扫描必要的一个或多个分区来提高查询效率；同时在涉及聚合函数的查询时，可以容易地在每个分区上并行处理
+	3.对于已经过期或者不需要保存的数据，可以通过删除分区来快速删除
+	4.跨多个磁盘来分散数据查询，以获得更大的吞吐量
+3.分区有利于管理非常大的表，分区引入了分区键的概念，分区键用于根据某个区间值、特定值列表或者hash函数值执行数据的聚集，让数据根据规则分布在不同的分区
+4.show variables like ‘%partition%’显示是否支持分区
+5.同一个分区表的所有分区必须使用同一存储引擎；对不同的分区表使用不同的存储引擎
+6.分区表创建语句中，引擎语句必须在分区选项前
+7.示例：
+CREATE TABLE emp(empid INT,salary DECIMAl(7,2),birth_date DATE)
+ENGINE=INNODB
+PARTITION BY HASH( MONTH(birth_date) ）
+PARTITION 6
+8.分区类型：
+	1.RANGE分区：基于一个给定连续区间范围，把数据分配到不同分区
+	2.LIST分区：类似RANGE分区，区别在于LIST分区是基于枚举的值列表分区
+	3.HASH分区：基于给定的分区个数
+	4.KEY分区：类似HASH分区
+	5.前三种只能针对INT类型分区
+9.不能使用主键/唯一键字段之外的其他字段分区
+10.数据库和表名在windows不区分大小写，在linux区分大小写
+11。分区的名字是不区分大小写
+12.RANGE分区利用取值范围分区，区间要连续并且不能相互重叠
+13.示例：
+create table emp(
+	id int not null，
+	ename varchar(30),
+	hired date not null default '1970-01-01',
+	separated date not null default '9999-12-31',
+	job varchar(30) not null,
+	store_id int not null
+)
+Partition by range(store_id)(
+	partition p0 values less than(10),
+	partition p1 values less than(20),
+	partition p2 values less than max value
+);
+14.日期分区示例：
+create table emp_date(
+	id int not null,
+	name varchar(30),
+	hired date not null default '1970-01-01',
+	separated date not null default '9999-12-31',
+	job varchar(30) not null,
+	store_id int not null
+)
+Partition by range columns(separated)(
+	partition p0 values less than ('1996-01-01'),
+	partition p1 values less than ('2001-01-01'),
+	partition p2 values less than ('2006-01-01')
+);
+15.range分区功能：
+	1.删除过期数据，alter table emp drop partition p0
+	2.经常运行包含分区键的查询
+16.List分区是建立离散的值列表告诉数据库特定的值属于哪个分区，区别在list分区是从属于一个枚举列表的值的集合
+17.示例：
+create table expenses(
+	expense_date date not null,
+	category int,
+	amount decimal (10,3)
+)
+Partition by list(category)(
+	partition p0 values in(3,5),
+	partition p1 values in(1,10),
+	partition p2 values in(4,9)
+);
+18.columns分区可以细分为RANGE Columns分区和LIST Columns分区，都支持整数、日期、字符串三大数据类型
+19.columns支持多列分区：
+create table rc3(
+	a INT,
+	b INT
+)
+Partition by range columns(a,b)(
+	partition p01 values less than (0,10),
+	partition p02 values less than (10,10),#(1,10)存在(10,10)
+	partition p03 values less than (10,MAXVALUE),
+	partition p04 values less than (MAXVALUE,MAXVALUE)
+);
+示例：
+insert into rc3(a,b) values(1,10);
+select (1,10)<(10,10) from dual;
+insert into rc3(a,b) values(10,9);
+select (10,9)<(10,10) from dual;
+insert into rc3(a,b) values(10,10);
+select (10,10)<(10,10) from dual;
+select partition_name part,partition_expression expr,partition_description descr,table_rows from `information_schema`.partitions where table_schema=schema() and table_name='rc3';
+20.hash分区主要用于分散热点读，确保数据在预先确定个数的分区中尽可能平均分布，对于一个表执行hash分区时，mysql会对分区键应用一个散列函数，以此确定数据应当放在N个分区中的哪个分区
+21.mysql支持两种hash分区，常规hash分区和线性hash分区，常规使用的是取模算法，线性采用的是一个线性的2的幂的运算法则
+22.示例：
+#常规分区
+create table emp(
+	id int not null,
+	ename varchar(30),
+	hired date not null default '1970-01-01',
+	separated date not null default '9999-12-31',
+	job varchar(30) not null,
+	store_id int not null
+)
+partition by hash(store_id) partitions 4;#N=mod(store_id,4)
+explain partitions select * from emp where store_id=234;
+
+#线性分区 适合需要灵活变动分区的需求，但数据分布不太均衡
+create table emp2(
+	id int not null,
+	ename varchar(30),
+	hired date not null default '1970-01-01',
+	separated date not null default '9999-12-31',
+	job varchar(30) not null,
+	store_id int not null
+)
+partition by linear hash(store_id) partitions 4;
+23.N计算可以通过以下算法得到。
+1.首先，找到下一个大于等于num的2的幂，这个值设为V,V可以通过下面的公式得到
+	V=Power(2,Ceiling(Log(2,num))),num=4时，V=4
+2.其次，设置N=F(column_list)&(V-1),N=234&(4-1)=2
+3.最后当N>=num时，设置N=N&(V-1),否则即为N
+
+24.key分区
+示例：create table emp(
+	id int not null，
+	ename varchar(30),
+	hired date not null default '1970-01-01',
+	separated date not null default '9999-12-31',
+	job varchar(30) not null,
+	store_id int not null
+)
+Partition by key(job) partitions 4;
+默认使用主键，在没有主键的情况下使用非空唯一键。
+
+25.子分区
+子分区是分区表中对每个分区的再次分割，称为复合分区。
+示例：create table ts(id int, purchased date)
+	partition by range(Year(purchased))
+	subpartition by hash(to_days(purchased))
+	subpartitions 2
+	(
+		partition p0 values less than(1990),
+		partition p1 values less than(maxvalue)
+	);
+分区总数为2*2=4，适用于保存非常大量的数据记录
+
+26.mysql分区处理null值的方式
+Mysql不禁止在分区键值上使用null，分区键值可能是一个字段或者一个用户定义的表达式，一般情况下，null被当作0或者一个最小值
+示例：create table tb_range(
+	id int,
+	name varchar(5)
+	)
+	partition by range(id)(
+	partition p0 values less than (-6),
+	partition p1 values less than(0),
+	partition p2 values less than (1),
+	partition p3 values less than maxvalue
+	);
+//插入null值会写入-6区
+
+27.分区管理
+Mysql提供了添加、删除、重定义、合并、拆分分区的命令
+删除分区：create table emp_date(
+	id int not null,
+	ename varchar(30),
+	hired date not null default '1970-01-01',
+	separated date not null default '9999-12-31',
+	job varchar(30) not null
+	)
+	partition by range(Year(separated))(
+	partition p0 values less than (1995),
+	partition p1 values less than (2005)
+	);
+	alter table emp_date drop partition p2;
+添加分区：alter table emp_date add partition (partition p4 values less than (2030));
+拆分分区：alter table emp_date reorganize partition p1 into(
+	partition p1 values less than(2003),
+	partition p2 values less than(2005)
+	);
+合并分区：alter table expenses add partition（partition p6 values in (11))
+	alter table expenses reorganize partition p4,p5,p6 into(
+	partition p4 values in(6,11),
+	partition p5 values in(7,8)
+	);
+
+28.hash&key分区管理
+create table emp(
+	id int not null,
+	ename varchar(30),
+	hired date not null default '1970-01-01',
+	separated date not null default '9999-12-31',
+	job varchar(30) not null,
+	store_id int not null
+)
+partition by hash(store_id) partitions 4;#N=mod(store_id,4)
+合并四个分区为2个分区：alter table emp coalesce partition 2；
+	

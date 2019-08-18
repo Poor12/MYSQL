@@ -14,3 +14,5 @@
 	
 	btree和hash都可以使用：select * from t1 where key_col=1 or key_col in (15,18,20)
 	btree索引适用：select * from t1 where key_col >1 and key_col < 10
+4.查询表中的索引：show index from table_name
+5.唯一索引不允许具有索引值相同的行

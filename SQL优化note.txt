@@ -1,0 +1,101 @@
+1.mysql客户端连接成功后，通过show [session|global] status命令可以提供服务器状态信息，也可以通过mysqladmin extended-status命令得到这些消息，session显示当前连接的统计结果，global显示自数据库上次启动至今的统计结果
+2.show status like 'Com_%';了解数据库是以插入更新为主还是以查询为主
+3.定位执行效率较低的sql语句：
+	1.通过慢查询日志定位效率较低的语句，用--log-slow-queries[=file_name]选项启动时，mysqld写一个包含所有执行时间超过long_query_time秒的SQL语句的日志文件。
+	2.慢查询日志在查询结束以后才记录，所以在应用反映执行效率出现问题时慢查询日志并不能定位问题，可以使用show processlist命令查看当前mysql在进行的线程，包括线程的状态、是否锁表等
+4.通过explain分析低效sql的执行计划 
+	通过explain或者desc命令获取mysql如何执行select语句的信息，包括执行过程中如何连接和连接的顺序
+示例：explain select sum(amount) from customer a,payment b where 1=1 and a.`customer_id`=b.`customer_id` and email='JANE.BENNETT@sakilacustomer.org'
+5.select_type表示select的类型，table表示输出结果集的表，type表示mysql在表中找到所需行的方式
+6.type：
+	1.type=all，全表扫描
+	2.type=index，索引全扫描
+	3.type=range，索引范围扫描
+	4.type=ref，使用非唯一索引扫描或唯一索引的前缀扫描，返回匹配某个单独值的记录行，ref经常出现在join操作
+	5.type=eq_ref,类似ref，区别在于使用的索引是唯一索引,多表连接使用primary key或者unique index作为关键条件
+	6.type=const/system，单表中最多有一个匹配行，const表示使用唯一索引，system表示从仅有一条记录的表中检索
+	7.type=NULL，mysql不用访问表或者索引
+7.possible_keys表示查询时可能使用的索引
+8.key表示实际使用的索引
+9.key_len使用到索引字段的长度
+10.rows表示扫描到的行数
+11.通过explain extended加上show warnings能够看到sql做的改写
+12.示例：
+#create table customer_part(id smallint(5) primary key)
+#partition by hash(id) partitions 8;
+insert into `customer_part` values(2);
+explain partitions select * from `customer_part` where id=2;
+13.通过show profile分析SQL
+select	@@having_profiling;	#是否支持profile
+Select @@profiling	#默认关闭
+set profiling=1;
+14.示例：MyISAM表有表元数据的缓存(例如行数),那么对于MyISAM表中count(*)是不消耗太多资源的，对于InnoDB则很慢
+Show profiles;
+Show profile for query 4;
+Show profile cpu for query 4;
+Create table emp2 like emp;
+Alter table emp2 engine=myisam;
+Insert into emp2 select * from emp;
+Show profile source for query 4;	#每个步骤对应源码的文件、函数以及具体源文件行数
+15.通过trace分析优化器如何选择执行计划
+set optimizer_trace='enabled=on',end_markers_in_json=on;	#打开trace,设置格式为JSON
+set optimizer_trace_max_mem_size=1000000;	#设置内存大小
+select * FROM information_schema.optimizer_trace;
+16.索引的存储分类：
+	1.B树索引
+	2.hash索引，memory引擎支持
+	3.R树索引：空间索引是myisam的一个索引类型
+	4.full-text：全文索引也是myisam的一个索引类型
+17.hash索引适用于key_value查询，查询更快，但不适用于范围查询
+18.示例：sakila的rental表
+#重命名索引
+alter table rental drop index rental_date;
+alter table rental add index idx_rental_date(rental_date,`inventory_id`,`customer_id`);
+18.mysql能够使用索引的典型场景
+	1.匹配全值，对索引中所有列都指定具体值
+	2.匹配值的范围查询，对索引的值能够进行范围查找
+	3.匹配最左前缀，仅仅使用索引中的最左边列进行查找，最左匹配原则，col1+col2+col3的联合索引能够被col1、col1+col2、col1+col2+col3所利用，但不能被col2、col2+col3所利用
+	4.仅仅对索引进行查询，查询的列都在索引的字段中，不需要索引回表
+	5.匹配列前缀，仅仅使用索引的第一列，并且只包含索引第一列的开头一部分进行查找 
+	6.能够实现索引匹配部分精确而其他部分进行范围匹配
+	7.如果列名为索引，那么使用column is null就会使用索引
+	8.ICP特性
+19.存在索引但不能使用索引的典型场景：
+	1.以%开头的like查询不能利用btree索引
+	示例：#explain select * from actor where last_name like '%NI%';
+	explain select * from (select actor_id from actor where last_name like '%NI%')a,actor b where a.actor_id=b.actor_id;
+	2.数据类型出现隐式转换时不会使用索引，特别是当列类型是字符串，一定要将字符串常量引起来
+	3.复合索引的情况下，不满足最左原则
+	4.如果mysql估计使用索引比全表扫描更慢，则不使用索引
+	示例：#update film_text. set title=concat('S',title);
+	explain select * from film_text where title like 'S%';
+	explain select * from film_text where title like 'SW%';
+	5.用or分割开的条件，如果or前的条件中的列有索引，而后面的列中没有索引
+20.查看索引使用情况
+	show status like 'Handler_read%';	#handler_read_rnd_next表示在数据文件中读下一行的请求数
+21.两个简单实用的优化方法
+	1.定期分析表和检查表
+		1.1 analyze table payment;	#本语句用于分析和存储表的关键词分布
+		1.2 check table payment_myisam;	#检查一个或多个表是否有错误
+			示例：create view v_payment_myisam as select * from payment;
+			check table v_payment_myisam;
+	2.定期优化表
+		optimize table payment_myisam;	#可以将表中的空间碎片进行合并，只对myisam、bdb和innodb表起作用
+22.常用SQL的优化
+	1.大批量插入数据：当用load命令导入数据的时候，适当的设置可以提高导入的速度
+	示例：alter table tbl_name disable keys；#用来打开或者关闭myisam表非唯一索引的更新。
+	正常导入:load data infile ‘/home/mysql/film_test.txt' into table film_test2;
+	优化后:alter table film_test2 disable keys; load data infile '/home/mysql/film_test.txt' into table film_test2;alter table film_test2 enable keys;(只适用于myisam）
+	2.当被导入的文件按表主键顺序存储时比不按主键顺序存储时快，导入前关闭唯一性校验unique_checks=0,导入结束后启动可以加快导入的速率，如果应用使用自动提交的方式同理
+	3.优化insert语句：
+		1.插入多行使用多个值表的insert语句
+		2.如果从不同用户插入很多行，使用insert delayed，含义是让insert语句马上执行
+		3.将索引文件和数据文件分在不同磁盘上存放
+		4.如果进行批量插入，可以通过bulk_insert_buffer_size变量值来提高速度(MyISAM)
+		5.当一个文本文件装载一个表时，使用load data infile
+	4.优化order by语句：
+		1.mysql的两种排序方式：1.通过有序索引顺序扫描直接返回有序数据。2.对返回数据进行排序
+		2.优化目标：尽量减少额外的排序，通过索引直接返回有序数据
+		3.使用索引的情况：1.select * from tabname order by key_part1,key_part2; 				2.select * from tabname where key_part=1 order by key_part1 				desc,key_part2 desc;
+	
+	

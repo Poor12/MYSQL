@@ -1,73 +1,74 @@
-sql·ÖÀà£º
-1.ddlÓï¾ä£ºÊı¾İ¶¨ÒåÓïÑÔ£¬ÕâĞ©Óï¾ä¶¨ÒåÁË²»Í¬µÄÊı¾İ¶Î¡¢Êı¾İ¿â¡¢±í¡¢ÁĞ¡¢Ë÷ÒıµÈÊı¾İ¿â¶ÔÏó¡££¨°üÀ¨create£¬drop£¬alter£©
-2.dmlÓï¾ä£ºÊı¾İ²Ù×İÓï¾ä£¬ÓÃÓÚÌí¼Ó¡¢É¾³ı¡¢¸üĞÂºÍ²éÑ¯Êı¾İ¿â¼ÇÂ¼¡££¨°üÀ¨insert£¬delete£¬update£¬select£©
-3.dclÓï¾ä£ºÊı¾İ¿ØÖÆÓï¾ä£¬ÓÃÓÚ¿ØÖÆ²»Í¬Êı¾İ¶ÎÖ±½ÓĞí¿ÉºÍ·ÃÎÊ¼¶±ğµÄÓï¾ä£¬ÕâĞ©Óï¾ä¶¨ÒåÁËÊı¾İ¿â¡¢±í¡¢×Ö¶ÎµÄ·ÃÎÊÈ¨ÏŞºÍ°²È«¼¶±ğ¡££¨°üÀ¨grant£¬revoke)
+sqlåˆ†ç±»ï¼š
+1.ddlè¯­å¥ï¼šæ•°æ®å®šä¹‰è¯­è¨€ï¼Œè¿™äº›è¯­å¥å®šä¹‰äº†ä¸åŒçš„æ•°æ®æ®µã€æ•°æ®åº“ã€è¡¨ã€åˆ—ã€ç´¢å¼•ç­‰æ•°æ®åº“å¯¹è±¡ã€‚ï¼ˆåŒ…æ‹¬createï¼Œdropï¼Œalterï¼‰
+2.dmlè¯­å¥ï¼šæ•°æ®æ“çºµè¯­å¥ï¼Œç”¨äºæ·»åŠ ã€åˆ é™¤ã€æ›´æ–°å’ŒæŸ¥è¯¢æ•°æ®åº“è®°å½•ã€‚ï¼ˆåŒ…æ‹¬insertï¼Œdeleteï¼Œupdateï¼Œselectï¼‰
+3.dclè¯­å¥ï¼šæ•°æ®æ§åˆ¶è¯­å¥ï¼Œç”¨äºæ§åˆ¶ä¸åŒæ•°æ®æ®µç›´æ¥è®¸å¯å’Œè®¿é—®çº§åˆ«çš„è¯­å¥ï¼Œè¿™äº›è¯­å¥å®šä¹‰äº†æ•°æ®åº“ã€è¡¨ã€å­—æ®µçš„è®¿é—®æƒé™å’Œå®‰å…¨çº§åˆ«ã€‚ï¼ˆåŒ…æ‹¬grantï¼Œrevoke)
 
 ddl:
-1.create database dbname;  //´´½¨Êı¾İ¿â
-2.show databases;  //ÏÔÊ¾ÒÑÓĞµÄÊı¾İ¿â
-ÏµÍ³×Ô´øÊı¾İ¿â£º
-£¨1£©information_schema:Ö÷Òª´æ´¢ÁËÏµÍ³ÖĞµÄÒ»Ğ©Êı¾İ¿â¶ÔÏóĞÅÏ¢£¬±ÈÈçÓÃ»§±íĞÅÏ¢¡¢ÁĞĞÅÏ¢¡¢È¨ÏŞĞÅÏ¢¡¢×Ö·û¼¯ĞÅÏ¢¡¢·ÖÇøĞÅÏ¢µÈ
-£¨2£©cluster:´æ´¢ÁËÏµÍ³µÄ¼¯ÈºĞÅÏ¢
-£¨3£©mysql:´æ´¢ÁËÏµÍ³µÄÓÃ»§È¨ÏŞĞÅÏ¢
-£¨4£©test:ÏµÍ³×Ô¶¯´´½¨µÄ²âÊÔÊı¾İ¿â£¬ÈÎºÎÓÃ»§¶¼¿ÉÒÔÊ¹ÓÃ
-3.use dbname£»//Ñ¡ÔñÊı¾İ¿â
-4.show tables£»//²é¿´Êı¾İ¿âÖĞµÄ±í
-5.drop database dbname;  //É¾³ıÊı¾İ¿â
+1.create database dbname;  //åˆ›å»ºæ•°æ®åº“
+2.show databases;  //æ˜¾ç¤ºå·²æœ‰çš„æ•°æ®åº“
+ç³»ç»Ÿè‡ªå¸¦æ•°æ®åº“ï¼š
+ï¼ˆ1ï¼‰information_schema:ä¸»è¦å­˜å‚¨äº†ç³»ç»Ÿä¸­çš„ä¸€äº›æ•°æ®åº“å¯¹è±¡ä¿¡æ¯ï¼Œæ¯”å¦‚ç”¨æˆ·è¡¨ä¿¡æ¯ã€åˆ—ä¿¡æ¯ã€æƒé™ä¿¡æ¯ã€å­—ç¬¦é›†ä¿¡æ¯ã€åˆ†åŒºä¿¡æ¯ç­‰
+ï¼ˆ2ï¼‰cluster:å­˜å‚¨äº†ç³»ç»Ÿçš„é›†ç¾¤ä¿¡æ¯
+ï¼ˆ3ï¼‰mysql:å­˜å‚¨äº†ç³»ç»Ÿçš„ç”¨æˆ·æƒé™ä¿¡æ¯
+ï¼ˆ4ï¼‰test:ç³»ç»Ÿè‡ªåŠ¨åˆ›å»ºçš„æµ‹è¯•æ•°æ®åº“ï¼Œä»»ä½•ç”¨æˆ·éƒ½å¯ä»¥ä½¿ç”¨
+3.use dbnameï¼›//é€‰æ‹©æ•°æ®åº“
+4.show tablesï¼›//æŸ¥çœ‹æ•°æ®åº“ä¸­çš„è¡¨
+5.drop database dbname;  //åˆ é™¤æ•°æ®åº“
 6.create table tablename(
 	columm_name1 column_type_1 constraints,
-	columm_name2 column_type_2 constraints)  //´´½¨Êı¾İ¿â ÁĞÃû¡¢ÁĞÀàĞÍ¡¢Ô¼Êø
-7.desc tablename£» //²é¿´±íµÄ¶¨Òå
-8.show create table tablename \G; //²é¿´¸üÏêÏ¸µÄ±íµÄ¶¨Òå \g±íÊ¾Ê¹¼ÇÂ¼ÄÜ¹»°´ÕÕ×Ö¶ÎÊúÅÅ£¬ÒÔ±ã¸üºÃµÄÏÔÊ¾ÄÚÈİ
-9.drop table tablename; //É¾³ı±í
-10.alter table tablename modify columnname column_definition [first|after col_name]  //ĞŞ¸Ä±íÀàĞÍ£¬[first|after col_name] ±íÊ¾²åÈëµÄÎ»ÖÃ£¬Ä¬ÈÏÔÚ×îºó
-11.alter table tablename add [column] columnname column_definition [first|after col_name] //Ôö¼Ó±í×Ö¶Î
-12.alter table tablename drop [column] columnname //É¾³ı±í×Ö¶Î
-13.alter table tablename change [column] old_col_name new_col_name column_definition [first|after col_name] //×Ö¶Î¸ÄÃû
-14.alter table tablename rename[to] new_tablename;//±í¸üÃû
+	columm_name2 column_type_2 constraints)  //åˆ›å»ºæ•°æ®åº“ åˆ—åã€åˆ—ç±»å‹ã€çº¦æŸ
+7.desc tablenameï¼› //æŸ¥çœ‹è¡¨çš„å®šä¹‰
+8.show create table tablename \G; //æŸ¥çœ‹æ›´è¯¦ç»†çš„è¡¨çš„å®šä¹‰ \gè¡¨ç¤ºä½¿è®°å½•èƒ½å¤ŸæŒ‰ç…§å­—æ®µç«–æ’ï¼Œä»¥ä¾¿æ›´å¥½çš„æ˜¾ç¤ºå†…å®¹
+9.drop table tablename; //åˆ é™¤è¡¨
+10.alter table tablename modify columnname column_definition [first|after col_name]  //ä¿®æ”¹è¡¨ç±»å‹ï¼Œ[first|after col_name] è¡¨ç¤ºæ’å…¥çš„ä½ç½®ï¼Œé»˜è®¤åœ¨æœ€å
+11.alter table tablename add [column] columnname column_definition [first|after col_name] //å¢åŠ è¡¨å­—æ®µ
+12.alter table tablename drop [column] columnname //åˆ é™¤è¡¨å­—æ®µ
+13.alter table tablename change [column] old_col_name new_col_name column_definition [first|after col_name] //å­—æ®µæ”¹å
+14.alter table tablename rename[to] new_tablename;//è¡¨æ›´å
+15.create schema  //åˆ›å»ºæ•°æ®åº“æ¨¡å¼
 
 dml:
-1.insert into tablename(field1...fieldn) values(value1....valuen);//²åÈë¼ÇÂ¼£¬¿ÉÒÔ²»Ö¸¶¨×Ö¶ÎÃû³Æ£¬º¬¿É¿Õ×Ö¶Î¡¢·Ç¿Õµ«ÊÇº¬ÓĞÄ¬ÈÏÖµµÄ×Ö¶Î¡¢×ÔÔö×Ö¶Î¿ÉÒÔ²»ÓÃÔÚinsertºóµÄ×Ö¶ÎÁĞ±íÖĞ³öÏÖ£¬valuesºóÃæÖ»Ğ´¶ÔÓ¦×Ö¶ÎÃû³ÆµÄvalue¡£ÕâĞ©Ã»Ğ´µÄ×Ö¶Î¿ÉÒÔ×Ô¶¯ÉèÖÃÎªnull¡¢Ä¬ÈÏÖµ¡¢×ÔÔöµÄÏÂÒ»¸öÊı×Ö¡£
-2.update tablename set field1=value1,field2=value2....fieldn=valuen [where condition] //¸üĞÂ¼ÇÂ¼
-3.delete from tablename [where condition] //É¾³ı¼ÇÂ¼£¬²»¼ÓwhereÉ¾³ıÈ«±í
-4.select * from tablename [where condition] //²éÑ¯¼ÇÂ¼
-5.select distinct fieldname fron tablename //²éÑ¯²»ÖØ¸´µÄ¼ÇÂ¼
-6.select * from tablename [where condition] [order by field1 [desc/asc]....]//²éÑ¯ºóÅÅĞòÏÔÊ¾£¬Ä¬ÈÏÉıĞò
-7.select ...[limit offset_start,row_count] //offset_start¼ÇÂ¼µÄÆğÊ¼Æ«ÒÆÁ¿£¬Ä¬ÈÏÎª0£¬row_count±íÊ¾ÏÔÊ¾µÄĞĞÊı
+1.insert into tablename(field1...fieldn) values(value1....valuen);//æ’å…¥è®°å½•ï¼Œå¯ä»¥ä¸æŒ‡å®šå­—æ®µåç§°ï¼Œå«å¯ç©ºå­—æ®µã€éç©ºä½†æ˜¯å«æœ‰é»˜è®¤å€¼çš„å­—æ®µã€è‡ªå¢å­—æ®µå¯ä»¥ä¸ç”¨åœ¨insertåçš„å­—æ®µåˆ—è¡¨ä¸­å‡ºç°ï¼Œvaluesåé¢åªå†™å¯¹åº”å­—æ®µåç§°çš„valueã€‚è¿™äº›æ²¡å†™çš„å­—æ®µå¯ä»¥è‡ªåŠ¨è®¾ç½®ä¸ºnullã€é»˜è®¤å€¼ã€è‡ªå¢çš„ä¸‹ä¸€ä¸ªæ•°å­—ã€‚
+2.update tablename set field1=value1,field2=value2....fieldn=valuen [where condition] //æ›´æ–°è®°å½•
+3.delete from tablename [where condition] //åˆ é™¤è®°å½•ï¼Œä¸åŠ whereåˆ é™¤å…¨è¡¨
+4.select * from tablename [where condition] //æŸ¥è¯¢è®°å½•
+5.select distinct fieldname fron tablename //æŸ¥è¯¢ä¸é‡å¤çš„è®°å½•
+6.select * from tablename [where condition] [order by field1 [desc/asc]....]//æŸ¥è¯¢åæ’åºæ˜¾ç¤ºï¼Œé»˜è®¤å‡åº
+7.select ...[limit offset_start,row_count] //offset_startè®°å½•çš„èµ·å§‹åç§»é‡ï¼Œé»˜è®¤ä¸º0ï¼Œrow_countè¡¨ç¤ºæ˜¾ç¤ºçš„è¡Œæ•°
 8.select [field1...fieldn] fun_name from tablename [where condition] [group by field1...[with rollup]] [having where_condition] 
-//fun_name±íÊ¾Òª×öµÄ¾ÛºÏ²Ù×÷£¬Ò²¾ÍÊÇ¾ÛºÏº¯Êı£¬³£ÓÃµÄÓĞsum£¬count£¬max£¬min
-//group by±íÊ¾Òª½øĞĞ·ÖÀà¾ÛºÏµÄ×Ö¶Î£¬±ÈÈç°´ÕÕ²¿ÃÅ·ÖÀàÍ³¼ÆÔ±¹¤ÊıÁ¿£¬²¿ÃÅ¾ÍĞ´ÔÚgroup byºó
-//with rollup±íÊ¾ÊÇ·ñ¶Ô·ÖÀà¾ÛºÏºóµÄ½á¹û½øĞĞÔÙ»ã×Ü
-//having±íÊ¾¶Ô·ÖÀàºóµÄ½á¹ûÔÙ½øĞĞÌõ¼şµÄ¹ıÂË
-9.ĞèÒªÍ¬Ê±ÏÔÊ¾¶à¸ö±íÖĞµÄ×Ö¶ÎÊ±¿ÉÒÔÓÃ±íÁ¬½ÓÀ´ÊµÏÖÕâÑùµÄ¹¦ÄÜ£¬´óÌåÉÏ·ÖÎªÍâÁ¬½ÓºÍÄÚÁ¬½Ó¡£ÄÚÁ¬½Ó½öÑ¡³öÁ½ÕÅ±íÖĞ»¥ÏàÆ¥ÅäµÄ¼ÇÂ¼£¬¶øÍâÁ¬½Ó»áÑ¡³öÆäËû²»Æ¥ÅäµÄ¼ÇÂ¼¡£
-   ÄÚÁ¬½Ó¾ÙÀı£ºselect emp.ename,dept.deptname from emp,dept where emp.deptno=dept.deptno
-   ÍâÁ¬½Ó·ÖÎª×óÁ¬½ÓºÍÓÒÁ¬½Ó£¬×óÁ¬½Ó°üº¬ËùÓĞµÄ×ó±ß±íÖĞµÄ¼ÇÂ¼ÉõÖÁÊÇÓÒ±ß±íÃ»ÓĞºÍËüÆ¥ÅäµÄ¼ÇÂ¼£¬ÓÒÁ¬½Ó°üº¬ËùÓĞµÄÓÒ±ß±íÖĞµÄ¼ÇÂ¼ÉõÖÁÊÇ×ó±ß±íÃ»ÓĞºÍËüÆ¥ÅäµÄ¼ÇÂ¼¡£
-   ×óÁ¬½Ó¾ÙÀı£ºselect ename,deptname from emp left join dept on emp.deptno=dept.deptno
-   ÓÒÁ¬½Ó¾ÙÀı£ºselect ename,deptname from dept right join emp on emp.deptno=dept.deptno
-10.Ä³Ğ©Çé¿öÏÂ£¬µ±½øĞĞ²éÑ¯Ê±ĞèÒªµÄÌõ¼şÊÇÁíÍâÒ»¸öselectÓï¾äµÄ½á¹û£¬Õâ¸öÊ±ºò¾ÍÒªÓÃµ½×Ó²éÑ¯¡£
-     Àı£ºselect * from emp where deptno in(select deptno from dept)£¬Èç¹û×Ó²éÑ¯¼ÇÂ¼ÊıÎ¨Ò»£¬¿ÉÒÔÓÃ=´úÌæin£¬×Ó²éÑ¯ÔÚÒ»¶¨Çé¿öÏÂ¿É×ª»¯Îª±íÁ¬½Ó
-11.select * from t1 [union/union all] select * from t2 //¼ÇÂ¼ÁªºÏ£¬½«½á¹û¼¯ºÏ²¢£¬union allÖ±½ÓºÏ²¢£¬union½øĞĞÈ¥ÖØ
+//fun_nameè¡¨ç¤ºè¦åšçš„èšåˆæ“ä½œï¼Œä¹Ÿå°±æ˜¯èšåˆå‡½æ•°ï¼Œå¸¸ç”¨çš„æœ‰sumï¼Œcountï¼Œmaxï¼Œmin
+//group byè¡¨ç¤ºè¦è¿›è¡Œåˆ†ç±»èšåˆçš„å­—æ®µï¼Œæ¯”å¦‚æŒ‰ç…§éƒ¨é—¨åˆ†ç±»ç»Ÿè®¡å‘˜å·¥æ•°é‡ï¼Œéƒ¨é—¨å°±å†™åœ¨group byå
+//with rollupè¡¨ç¤ºæ˜¯å¦å¯¹åˆ†ç±»èšåˆåçš„ç»“æœè¿›è¡Œå†æ±‡æ€»
+//havingè¡¨ç¤ºå¯¹åˆ†ç±»åçš„ç»“æœå†è¿›è¡Œæ¡ä»¶çš„è¿‡æ»¤
+9.éœ€è¦åŒæ—¶æ˜¾ç¤ºå¤šä¸ªè¡¨ä¸­çš„å­—æ®µæ—¶å¯ä»¥ç”¨è¡¨è¿æ¥æ¥å®ç°è¿™æ ·çš„åŠŸèƒ½ï¼Œå¤§ä½“ä¸Šåˆ†ä¸ºå¤–è¿æ¥å’Œå†…è¿æ¥ã€‚å†…è¿æ¥ä»…é€‰å‡ºä¸¤å¼ è¡¨ä¸­äº’ç›¸åŒ¹é…çš„è®°å½•ï¼Œè€Œå¤–è¿æ¥ä¼šé€‰å‡ºå…¶ä»–ä¸åŒ¹é…çš„è®°å½•ã€‚
+   å†…è¿æ¥ä¸¾ä¾‹ï¼šselect emp.ename,dept.deptname from emp,dept where emp.deptno=dept.deptno
+   å¤–è¿æ¥åˆ†ä¸ºå·¦è¿æ¥å’Œå³è¿æ¥ï¼Œå·¦è¿æ¥åŒ…å«æ‰€æœ‰çš„å·¦è¾¹è¡¨ä¸­çš„è®°å½•ç”šè‡³æ˜¯å³è¾¹è¡¨æ²¡æœ‰å’Œå®ƒåŒ¹é…çš„è®°å½•ï¼Œå³è¿æ¥åŒ…å«æ‰€æœ‰çš„å³è¾¹è¡¨ä¸­çš„è®°å½•ç”šè‡³æ˜¯å·¦è¾¹è¡¨æ²¡æœ‰å’Œå®ƒåŒ¹é…çš„è®°å½•ã€‚
+   å·¦è¿æ¥ä¸¾ä¾‹ï¼šselect ename,deptname from emp left join dept on emp.deptno=dept.deptno
+   å³è¿æ¥ä¸¾ä¾‹ï¼šselect ename,deptname from dept right join emp on emp.deptno=dept.deptno
+10.æŸäº›æƒ…å†µä¸‹ï¼Œå½“è¿›è¡ŒæŸ¥è¯¢æ—¶éœ€è¦çš„æ¡ä»¶æ˜¯å¦å¤–ä¸€ä¸ªselectè¯­å¥çš„ç»“æœï¼Œè¿™ä¸ªæ—¶å€™å°±è¦ç”¨åˆ°å­æŸ¥è¯¢ã€‚
+     ä¾‹ï¼šselect * from emp where deptno in(select deptno from dept)ï¼Œå¦‚æœå­æŸ¥è¯¢è®°å½•æ•°å”¯ä¸€ï¼Œå¯ä»¥ç”¨=ä»£æ›¿inï¼Œå­æŸ¥è¯¢åœ¨ä¸€å®šæƒ…å†µä¸‹å¯è½¬åŒ–ä¸ºè¡¨è¿æ¥
+11.select * from t1 [union/union all] select * from t2 //è®°å½•è”åˆï¼Œå°†ç»“æœé›†åˆå¹¶ï¼Œunion allç›´æ¥åˆå¹¶ï¼Œunionè¿›è¡Œå»é‡
 
 
-dclÓï¾ä£º
-1.grant select,insert on sakila.* to 'z1'@'localhost' identified by '123' //´´½¨Ò»¸öÊı¾İ¿âÓÃ»§z1£¬¾ßÓĞ¶ÔËùÓĞ±íµÄinsert¡¢selectÈ¨ÏŞ
-2.revoke select,insert on sakila.* to 'z1'@'localhost' //ÊÕ»ØÈ¨ÏŞ
+dclè¯­å¥ï¼š
+1.grant select,insert on sakila.* to 'z1'@'localhost' identified by '123' //åˆ›å»ºä¸€ä¸ªæ•°æ®åº“ç”¨æˆ·z1ï¼Œå…·æœ‰å¯¹æ‰€æœ‰è¡¨çš„insertã€selectæƒé™
+2.revoke select,insert on sakila.* to 'z1'@'localhost' //æ”¶å›æƒé™
 
-°ïÖúÓï¾ä£º
-1.£¿contents ²é¿´°ïÖúÀà±ğ
-2.£¿data types ²é¿´Êı¾İÀàĞÍ
-3.£¿create table²é¿´Óï·¨
+å¸®åŠ©è¯­å¥ï¼š
+1.ï¼Ÿcontents æŸ¥çœ‹å¸®åŠ©ç±»åˆ«
+2.ï¼Ÿdata types æŸ¥çœ‹æ•°æ®ç±»å‹
+3.ï¼Ÿcreate tableæŸ¥çœ‹è¯­æ³•
 
-²éÑ¯ÔªÊı¾İĞÅÏ¢£º
-1.information_schemaÓÃÀ´¼ÇÂ¼mysqlÖĞµÄÔªÊı¾İĞÅÏ¢¡£ÔªÊı¾İÖ¸µÄÊÇÊı¾İµÄÊı¾İ£¬±ÈÈç±íÃû¡¢ÁĞÃû¡¢ÁĞÀàĞÍ¡¢Ë÷ÒıÃûµÈÊôĞÔ¡£ËüÊÇÒ»¸öĞéÄâÊı¾İ¿â£¬ÎïÀíÉÏ²¢²»´æÔÚÏà¹ØµÄÄ¿Â¼ºÍÎÄ¼ş£»¿âÀïµÄ±íÒ²²»ÊÇÊµ¼Ê´æÔÚµÄ±í£¬È«²¿ÊÇÊÓÍ¼¡£
-Õë¶ÔÏÂÁĞĞèÇó£º
-1.É¾³ıÊı¾İ¿âtest1ÏÂËùÓĞÇ°×ºÎªtmpµÄ±í£»
+æŸ¥è¯¢å…ƒæ•°æ®ä¿¡æ¯ï¼š
+1.information_schemaç”¨æ¥è®°å½•mysqlä¸­çš„å…ƒæ•°æ®ä¿¡æ¯ã€‚å…ƒæ•°æ®æŒ‡çš„æ˜¯æ•°æ®çš„æ•°æ®ï¼Œæ¯”å¦‚è¡¨åã€åˆ—åã€åˆ—ç±»å‹ã€ç´¢å¼•åç­‰å±æ€§ã€‚å®ƒæ˜¯ä¸€ä¸ªè™šæ‹Ÿæ•°æ®åº“ï¼Œç‰©ç†ä¸Šå¹¶ä¸å­˜åœ¨ç›¸å…³çš„ç›®å½•å’Œæ–‡ä»¶ï¼›åº“é‡Œçš„è¡¨ä¹Ÿä¸æ˜¯å®é™…å­˜åœ¨çš„è¡¨ï¼Œå…¨éƒ¨æ˜¯è§†å›¾ã€‚
+é’ˆå¯¹ä¸‹åˆ—éœ€æ±‚ï¼š
+1.åˆ é™¤æ•°æ®åº“test1ä¸‹æ‰€æœ‰å‰ç¼€ä¸ºtmpçš„è¡¨ï¼›
 select concat('drop table test1.',  table_name,  ';') from tables where table_schema='test1' and table_name like 'tmp%';
-2.½«Êı¾İ¿âtest1ÏÂËùÓĞ´æ´¢ÒıÇæÎªmyisamµÄ±í¸ÄÎªinnodb£»
+2.å°†æ•°æ®åº“test1ä¸‹æ‰€æœ‰å­˜å‚¨å¼•æ“ä¸ºmyisamçš„è¡¨æ”¹ä¸ºinnodbï¼›
 select concat('alter table test1.',  table_name, '  engine=innodb;') from tables where table_schema='test1' and engine='MyISAM'
 
-³£ÓÃÊÓÍ¼£º
-1.schemata£º¸Ã±íÌá¹©ÁËµ±Ç°mysqlÊµÀıÖĞËùÓĞÊı¾İ¿âµÄĞÅÏ¢
-2.tables£º¸Ã±íÌá¹©ÁË¹ØÓÚÊı¾İ¿âÖĞµÄ±íµÄĞÅÏ¢£¬ÏêÏ¸±íÊöÁËÄ³¸ö±íÊôÓÚÄÄ¸öschema¡¢±íÀàĞÍ¡¢±íÒıÇæ¡¢´´½¨Ê±¼äµÈĞÅÏ¢
-3.columns£º¸Ã±íÌá¹©ÁË±íÖĞµÄÁĞĞÅÏ¢
-4.statistics£º¸Ã±íÌá¹©ÁË¹ØÓÚ±íË÷ÒıµÄĞÅÏ¢¡£
+å¸¸ç”¨è§†å›¾ï¼š
+1.schemataï¼šè¯¥è¡¨æä¾›äº†å½“å‰mysqlå®ä¾‹ä¸­æ‰€æœ‰æ•°æ®åº“çš„ä¿¡æ¯
+2.tablesï¼šè¯¥è¡¨æä¾›äº†å…³äºæ•°æ®åº“ä¸­çš„è¡¨çš„ä¿¡æ¯ï¼Œè¯¦ç»†è¡¨è¿°äº†æŸä¸ªè¡¨å±äºå“ªä¸ªschemaã€è¡¨ç±»å‹ã€è¡¨å¼•æ“ã€åˆ›å»ºæ—¶é—´ç­‰ä¿¡æ¯
+3.columnsï¼šè¯¥è¡¨æä¾›äº†è¡¨ä¸­çš„åˆ—ä¿¡æ¯
+4.statisticsï¼šè¯¥è¡¨æä¾›äº†å…³äºè¡¨ç´¢å¼•çš„ä¿¡æ¯ã€‚
